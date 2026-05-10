@@ -1,128 +1,116 @@
-# Facebook and Google+ Network Analysis
+# Community Detection in Social Networks
 
-This project, developed as part of UCLA EE232E - *Graphs and Network Flows*, explores real-world social network data (Facebook and Google+) using various graph-theoretic and statistical techniques to analyze structure, detect communities, and evaluate social metrics such as embeddedness and dispersion.
+This project analyzes large-scale online social networks through the lens of graph theory. It uses Facebook and Google+ style social graph data to study how communities form, how influential core users shape local neighborhoods, and how algorithmic community detection compares with user-defined groups.
 
+The repository is organized as a reproducible portfolio project. It includes a modular R analysis pipeline, small sample data for quick runs, documentation for sourcing the original public datasets, and generated result/figure directories.
 
-## Project Overview
+## Project Goals
 
-### Part 1: Facebook Network Analysis
+- Measure structural properties of social graphs, including connectivity, diameter, degree distribution, and core nodes.
+- Build ego networks around highly connected users to inspect local community structure.
+- Compare community detection methods such as Fast-Greedy, Edge-Betweenness, Infomap, and Walktrap.
+- Compute social-network metrics such as embeddedness and dispersion.
+- Evaluate how detected Google+ communities align with user-defined circles when circle metadata is available.
 
-Utilizing a dataset of 4,039 nodes and 88,234 edges from Facebook, the following analyses were conducted:
+## Key Techniques
 
-1. **Network Connectivity & Degree Analysis**:
-   - Confirmed network is connected with diameter = 8.
-   - Degree distribution fits best to an exponential model (MSE = 8.19).
+- Graph construction from edge lists
+- Degree distribution analysis
+- Ego-network extraction
+- Core-node identification
+- Community detection with `igraph`
+- Embeddedness and dispersion scoring
+- Community-level summaries using size, density, modularity, clustering coefficient, betweenness, and assortativity
 
-2. **Personal Network of Node 1**:
-   - Node 1 has 347 neighbors.
-   - Personal subgraph: 348 nodes, 2,866 edges.
+## Repository Structure
 
-3. **Core Nodes & Community Detection**:
-   - Identified 40 core nodes (degree > 200).
-   - Average degree: 279.38.
-   - Community detection on node 1's personal network using:
-     - Fast-Greedy
-     - Edge-Betweenness
-     - Infomap
-
-4. **Impact of Core Node Removal**:
-   - Increased number of communities.
-   - More singleton/isolated nodes.
-
-5. **Embeddedness and Dispersion Metrics**:
-   - Calculated for each core node's personal network.
-   - Identified nodes with maximum:
-     - Embeddedness
-     - Dispersion
-     - Dispersion/Embeddedness ratio
-   - Visualized networks showing community structure and key nodes.
-
-6. **Recurring Community Types Across Networks**:
-   - Developed statistical features:
-     - Size, Density, Modularity, Clustering Coefficient, Betweenness, Assortativity
-   - Defined:
-     - **Type 1**: High betweenness & density
-     - **Type 2**: High clustering & low modularity
-   - Identified these recurring types across multiple personal networks.
-
-
-### Part 2: Google+ Ego Network Analysis
-
-Analyzed directed ego-networks from Google+, focusing on community detection and user-defined "circles":
-
-- **Data**: Directed graphs with users’ edges and circle tags.
-- **Community Detection**:
-  - Algorithms used: Walktrap, Infomap.
-- **Circle Matching Evaluation**:
-  - Compared algorithm-detected communities vs. user-defined circles.
-  - Calculated average match scores per user.
-  - Noted variance in tagging habits:
-    - High match scores indicate community-aligned tagging.
-    - Low scores suggest overlapping or inconsistent user tagging behavior.
-
-
-## Technologies Used
-
-- **Language**: R
-- **Libraries**: `igraph`
-- **Data**:
-  - Facebook: `facebook_combined.txt`
-  - Google+: `gplus/` folder (with `.edges` and `.circles` files)
-
-
-## How to Run
-
-### Prerequisites
-
-- R installed on your system
-- `igraph` package (`install.packages("igraph")`)
-
-### Steps
-
-1. **Clone the repository**:
-   ```bash
-   git clone https://github.com/yourusername/ee232e-project1.git
-   cd ee232e-project1
-   ```
-
-2. **Run the R script**:
-   ```r
-   source("Project1.R")
-   ```
-
-3. **Modify paths as needed**:
-   - Change `read.graph()` path for Facebook dataset.
-   - Set working directory using `setwd()` for Google+ data (`gplus/` folder).
-
-4. **Execution Notes**:
-   - For Google+ analysis, the script will iterate through all ego networks.
-   - Console will print progress for each user.
-
-
-## Results Highlights
-
-- Facebook network demonstrates small-world properties and strong clustering.
-- Node 1’s personal network provides a microcosm of wider graph dynamics.
-- Infomap and Walktrap outperform in matching Google+ circles with actual community structure.
-- Novel identification of two common community types using statistical measures.
-
-
-## File Structure
-
-```
+```text
 .
-├── Project1.R               # Main R script for all analyses
-├── facebook_combined.txt   # Facebook network edgelist (not included)
-├── gplus/                   # Directory with Google+ .edges and .circles files (not included)
-└── README.md               # Project overview and instructions
+├── .gitignore
+├── LICENSE
+├── README.md
+├── run_analysis.R
+├── R/
+│   ├── community_detection.R
+│   ├── facebook_analysis.R
+│   ├── google_plus_analysis.R
+│   ├── load_data.R
+│   └── utils.R
+├── data/
+│   ├── README.md
+│   └── sample/
+│       ├── facebook_sample_edges.txt
+│       └── google_plus_sample_edges.txt
+├── docs/
+│   └── methodology.md
+├── figures/
+│   └── .gitkeep
+├── report/
+│   └── case_study.md
+└── results/
+    └── .gitkeep
 ```
 
+## Data
 
-## References
+The original analysis was designed for public SNAP social-network datasets:
 
-- [igraph R documentation](https://igraph.org/r/)
-- Facebook & Google+ datasets from Stanford SNAP
-- EE232E course materials
+- Facebook combined ego-network edge list
+- Google+ ego-network edge and circle files
+
+Large raw datasets are intentionally not committed to this repository. See [data/README.md](data/README.md) for download and placement instructions. The small files in `data/sample/` let the pipeline run quickly and demonstrate the analysis workflow.
+
+## Quick Start
+
+Install R and the `igraph` package:
+
+```r
+install.packages("igraph")
+```
+
+Run the sample analysis:
+
+```r
+source("run_analysis.R")
+```
+
+Outputs are written to:
+
+- `results/summary_metrics.csv`
+- `results/facebook_core_nodes.csv`
+- `figures/facebook_degree_distribution.png`
+- `figures/facebook_ego_network.png`
+
+## Running With Full Data
+
+Place full raw data files under `data/raw/`:
+
+```text
+data/raw/facebook_combined.txt
+data/raw/gplus/
+```
+
+Then run:
+
+```r
+source("run_analysis.R")
+```
+
+The pipeline automatically uses the full Facebook edge list when `data/raw/facebook_combined.txt` exists; otherwise it falls back to the included sample file.
+
+## Skills Demonstrated
+
+This project demonstrates the ability to:
+
+- Translate real social data into graph representations.
+- Design reproducible analytical workflows.
+- Compare graph algorithms empirically.
+- Communicate technical results through clear metrics, figures, and documentation.
+
+## Limitations
+
+The sample data is intentionally tiny and is only meant to verify the workflow. Meaningful conclusions require the full public datasets. Google+ circle matching also requires per-user `.edges` and `.circles` files, not just a combined edge list.
 
 ## License
-This project is released for academic and research purposes. Please credit the source if used in publications or derivative works.
+
+This project is licensed under the Apache License 2.0. See [LICENSE](LICENSE) for the full license text.

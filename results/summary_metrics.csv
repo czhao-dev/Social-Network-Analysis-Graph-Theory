@@ -1,0 +1,9 @@
+"metric","value"
+"vertices",16
+"edges",24
+"connected",1
+"diameter_or_largest_component_diameter",5
+"average_degree",3
+"max_degree",5
+"core_degree_threshold",5
+"core_node_count",1
